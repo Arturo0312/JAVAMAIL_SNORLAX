@@ -2,14 +2,12 @@ package com.AlcoM0312;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class MENSAJERO {
@@ -17,14 +15,18 @@ public class MENSAJERO {
     private String remitente="", clave="", destino="", asunto = "", contenido = "",
     fileRoute = "", fileName = "";
 
-    public MENSAJERO (String user, String pass, String des, String asu, String content, String fileR, String fileN  ){
+    ArrayList<String> destinatarios = new ArrayList<>();
+
+    public MENSAJERO (String user, String pass, ArrayList des, String asu, String content, String fileR, String fileN  ){
         remitente=user;
         clave=pass;
-        destino=des;
+        destinatarios=des;
         asunto=asu;
         contenido=content;
         fileRoute=fileR;
         fileName=fileN;
+
+
 
     }
 
@@ -43,16 +45,24 @@ public class MENSAJERO {
         MimeMessage mensaje = new MimeMessage(session);
 
         try{
-            mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(destino));
+            for(int i=0; i<destinatarios.size(); i++) {
+                mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatarios.get(i)));
+            }
             mensaje.setSubject(asunto);
+
             BodyPart parte_Tex = new MimeBodyPart();
             parte_Tex.setContent(contenido, "text/html");
-            //BodyPart parte_File = new MimeBodyPart();
-            //parte_File.setDataHandler(new DataHandler(new FileDataSource(fileRoute)));
-            //parte_File.setFileName(fileName);
+
             MimeMultipart todas = new MimeMultipart();
             todas.addBodyPart(parte_Tex);
-            //todas.addBodyPart(parte_File);
+
+            if(fileName != null && fileRoute != null) {
+                BodyPart parte_File = new MimeBodyPart();
+                parte_File.setDataHandler(new DataHandler(new FileDataSource(fileRoute)));
+                parte_File.setFileName(fileName);
+                todas.addBodyPart(parte_File);
+            }
+
             mensaje.setContent(todas);
             Transport transport = session.getTransport("smtp");
             transport.connect("smtp.gmail.com", remitente, clave);

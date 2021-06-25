@@ -10,6 +10,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -24,10 +25,14 @@ public class App
         INTERFAZ a = new INTERFAZ();
         a.formulario();
 
-        /*
+/*
         String remitente = "1930256@upv.edu.mx";
         String clave = "tuberculosis.";
         String destino = "1930248@upv.edu.mx";
+        ArrayList<String> destinatarios = new ArrayList<>();
+        destinatarios.add("1930345@upv.edu.mx");
+        destinatarios.add("1930167@upv.edu.mx");
+        destinatarios.add("1930536@upv.edu.mx");
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -41,10 +46,12 @@ public class App
         MimeMessage mensaje = new MimeMessage(session);
 
         try{
-            mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(destino));
-            mensaje.setSubject("Esto es una mejor prueba ");
+            for(int i=0; i<destinatarios.size(); i++) {
+                mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatarios.get(i)));
+            }
+            mensaje.setSubject("Prueba destinatarios");
             BodyPart parte_Tex = new MimeBodyPart();
-            parte_Tex.setContent("<b>HOLA PRECIOSA<b> <br> Este es el ultimo correo por hoy...<br>creo<br>" , "text/html");
+            parte_Tex.setContent("<b>HOLA GUAPOS<b> <br> Ando calando los multiples destinatarios" , "text/html");
             BodyPart parte_File = new MimeBodyPart();
             parte_File.setDataHandler(new DataHandler(new FileDataSource("/home/arturo/Descargas/IMAGEN.jpeg")));
             parte_File.setFileName("Imagen.jpeg");
@@ -61,6 +68,8 @@ public class App
             e.printStackTrace();
         }
 
-         */
+ */
+
+
     }
 }
